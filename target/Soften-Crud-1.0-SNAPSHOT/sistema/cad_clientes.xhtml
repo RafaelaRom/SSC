@@ -1,0 +1,327 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"     xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:adm="http://github.com/adminfaces" xmlns:g="http://gecont.com.br/g"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                template="#{layoutMB.template}">
+
+
+    <!--        <ui:define name="head">
+                <title>Painel</title>
+            </ui:define>-->
+
+    <ui:define name="head-end"> 
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: left !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="logo-lg">
+        Soften 
+    </ui:define>
+
+    <ui:define name="body-begin">
+        <ui:param name="title" value="Clientes"/>  
+    </ui:define>
+
+    <ui:define name="description">
+        Cadastro de Clientes
+    </ui:define>
+
+    <ui:define name="body">
+
+
+        <h:form prependId="false" id="formClientes">   
+
+
+            <div class="panel panel-primary">
+                <div class="panel-heading"><em class="fa fa-keyboard-o"><p:spacer width="10" /></em>Clientes Cadastrados</div>
+                <div class="panel-body"> 
+
+                    <div class="col-md-6">
+                        <p:commandButton value="Adicionar" action="#{clienteMB.onNovo()}" class="btn btn-md btn-success" 
+                                         icon="fa fa-plus"
+                                         resetValues="true"
+                                         update=":formCadastroCliente"
+                                         oncomplete="PF('cadastroCliente').show()"  >
+
+                        </p:commandButton> 
+                    </div> 
+
+                    <div class="col-md-6" style="text-align: right">
+                        <p:commandButton  disabled="#{clienteMB.desativaEditar}"
+                                          icon="fa fa-edit"
+                                          update=":formCadastroCliente"
+                                          resetValues="true"
+                                          action="#{clienteMB.onEditar()}"
+                                          oncomplete="PF('cadastroCliente').show()"
+                                          class="btn btn-md btn-info" value="Editar"> 
+                        </p:commandButton>
+                        <p:spacer width="15" />
+                        <p:commandButton icon="fa fa-trash" disabled="#{clienteMB.desativaExcluir}" action="#{clienteMB.onExcluir()}" update=":tabelaClienteID" class="btn btn-md btn-danger" value="Excluir">
+                            <p:confirm header="Confirmação" message="Você tem certeza que quer remover este cliente?" icon="pi pi-exclamation-triangle" />
+                        </p:commandButton>
+
+                    </div>
+
+
+                    <p:spacer height="5" />
+                    <p:dataTable widgetVar="tabelaCliente" id="tabelaClienteID" lazy="true" value="#{clienteMB.tabela}"  var="cliente" rows="20" paginator="true"
+                                 rowKey="#{cliente.hashCode()}"
+                                 sortBy="#{cliente.nome}" 
+                                 sortOrder="descending"
+                                 paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                                 emptyMessage="Nenhum cliente cadastrado"
+                                 selection="#{clienteMB.cliente}" selectionMode="single" >
+
+                        <p:ajax event="rowSelect" update="tabelaClienteID, formClientes"   />
+                        <p:ajax event="sort"  update="tabelaClienteID, formClientes" oncomplete="PF('tabelaCliente').filter()" />
+
+                        <p:column headerText="Nome / Razão Social" width="400" filterBy="#{cliente.nome}"    >
+                            <h:outputText value="#{cliente.nome}"/>
+                        </p:column> 
+
+                        <p:column headerText="CPF / CNPJ" width="100" filterBy="#{cliente.cpfCnpj}"  >
+                            <h:outputText value="#{cliente.cpfCnpj}">
+
+                            </h:outputText>
+                        </p:column> 
+
+                        <p:column headerText="CEP" filterBy="#{cliente.endereco.cep}" width="100"  >
+                            <h:outputText value="#{cliente.endereco.cep}"/>
+                        </p:column> 
+
+                        <p:column headerText="Logradouro" filterBy="#{cliente.endereco.logradouro}" width="100"  >
+                            <h:outputText value="#{cliente.endereco.logradouro}"/>
+                        </p:column> 
+
+                        <p:column headerText="Número"   width="100"  >
+                            <h:outputText value="#{cliente.endereco.numero}"/>
+                        </p:column> 
+                        <p:column headerText="Bairro" filterBy="#{cliente.endereco.bairro}" width="100"  >
+                            <h:outputText value="#{cliente.endereco.bairro}"/>
+                        </p:column> 
+
+                        <p:column headerText="Complemento" width="100"  >
+                            <h:outputText value="#{cliente.endereco.complemento}"/>
+                        </p:column> 
+
+                        <p:column headerText="Cidade" width="100" filterBy="#{cliente.endereco.cidade}" >
+                            <h:outputText value="#{cliente.endereco.cidade}"/>
+                        </p:column> 
+
+                        <p:column headerText="Estado" width="100" filterBy="#{cliente.endereco.estado}" >
+                            <h:outputText value="#{cliente.endereco.estado}"/>
+                        </p:column> 
+
+
+
+                    </p:dataTable>
+                </div>
+            </div>
+
+
+
+        </h:form>
+
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <h:form>
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+            </h:form> 
+        </p:confirmDialog>  
+
+        <p:dialog id='cadastroClienteID' width="800" header="Cadastro de Cliente"   modal="true" widgetVar="cadastroCliente">
+
+            <h:form id="formCadastroCliente"  >
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">Dados Cliente</div>
+                    <div class="panel-body">
+
+                        <div class="col-md-12">
+
+                            <div class="form-group"> 
+                                <p:selectOneRadio value="#{clienteMB.cliente.pessoaJuridica}"  >
+                                    <f:selectItem itemLabel="Física" itemValue="#{false}" />
+                                    <f:selectItem itemLabel="Jurídica" itemValue="#{true}" /> 
+                                    <p:ajax event="change" update="dadosCliente" />
+                                </p:selectOneRadio>
+
+                            </div> 
+
+                        </div> 
+                        <p:outputPanel id="dadosCliente">
+                            <div class="col-md-12">
+
+                                <div class="form-group">
+                                    <label>#{clienteMB.cliente.pessoaJuridica ? 'Razão Social': 'Nome Completo'}</label> 
+                                    <p:inputText id="clienteNome" class="form-control" value="#{clienteMB.cliente.nome}" maxlength="60"
+                                                 required="true" requiredMessage="#{clienteMB.cliente.pessoaJuridica ? 'campo Razão Social obrigatório': 'Campo Nome Completo obrigatório'}" a:placeholder="#{clienteMB.cliente.pessoaJuridica ? 'Razão Social': 'Nome Completo'}"/>
+                                    <span class="help-block"> 
+                                        <p:message for="clienteNome"/>
+                                    </span>
+                                </div> 
+
+                            </div> 
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label>#{clienteMB.cliente.pessoaJuridica ? 'CNPJ': 'CPF'}</label>
+                                    <p:inputMask id="clienteCpfCnpj" mask="#{clienteMB.cliente.pessoaJuridica ? '99.999.999/9999-99' : '999.999.999-99'}"
+                                                 class="form-control" maxlength="18" 
+                                                 value="#{clienteMB.cliente.cpfCnpj}"
+                                                 required="true" requiredMessage="#{clienteMB.cliente.pessoaJuridica ? 'Campo CPF obrigatório': 'Campo CNPJ obrigatório'}" a:placeholder="#{clienteMB.cliente.pessoaJuridica ? 'CNPJ': 'CPF'}">  
+                                        <f:validator validatorId="CpfCnpjValidator"/>
+                                    </p:inputMask>
+
+                                    <span class="help-block"> 
+                                        <p:message for="clienteCpfCnpj"/>
+                                    </span>
+                                </div> 
+                            </div> 
+
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label>Inscrição Estadual</label>
+                                    <p:inputText id="clienteIE" class="form-control" value="#{clienteMB.cliente.ie}" maxlength="14" 
+                                                 required="true"   requiredMessage="Digite a inscrição estadual" a:placeholder="Inscrição Estadual"/>
+                                    <span class="help-block"> 
+                                        <p:message for="clienteIE"/>
+                                    </span>
+                                </div> 
+                            </div>  
+                        </p:outputPanel>
+                    </div>
+
+
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Endereço</div>
+                    <div class="panel-body"> 
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>CEP</label>
+                                <p:inputText id="clienteCEP" class="form-control" value="#{clienteMB.cliente.endereco.cep}"  maxlength="8"
+                                             required="true" requiredMessage="Cep obrigatório"  a:placeholder="CEP"/>
+                                <span class="help-block"> 
+                                    <p:message for="clienteCEP"/>
+                                </span>
+                            </div> 
+                        </div> 
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Logradouro</label>
+                                <p:inputText id="clienteLog" class="form-control"  value="#{clienteMB.cliente.endereco.logradouro}"  maxlength="60"
+                                             required="true" requiredMessage="Logradouro obrigatório"  a:placeholder="Rua: Nome da Rua"/>
+                                <span class="help-block"> 
+                                    <p:message for="clienteLog"/>
+                                </span>
+                            </div> 
+                        </div> 
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Número</label>
+                                <p:inputMask mask="9?999999" style="text-align: right" id="clienteNum" class="form-control" value="#{clienteMB.cliente.endereco.numero}" maxlength="6"
+                                             required="true" requiredMessage="Número do imóvel obrigatório"  a:placeholder="999"/>
+
+                                <span class="help-block"> 
+                                    <p:message for="clienteNum"/>
+                                </span>
+                            </div> 
+                        </div> 
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Bairro</label>
+                                <p:inputText id="clienteBairro" class="form-control" value="#{clienteMB.cliente.endereco.bairro}" maxlength="60"
+                                             required="true" requiredMessage="Bairro obrigatório"  a:placeholder="Nome do Bairro"/>
+                                <span class="help-block"> 
+                                    <p:message for="clienteBairro"/>
+                                </span>
+                            </div> 
+                        </div> 
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Estado</label>
+                                <p:selectOneMenu id="clienteEstado"  required="true" requiredMessage="Estado obrigatório" converter="entityConverter"
+                                                 value="#{clienteMB.estadoSelecionado}" style="width: 100%">
+                                    <f:selectItem itemLabel="Selecione" itemValue="#{null}" />
+                                    <f:selectItems value="#{estadoMB.estados}" var="estado" itemLabel="#{estado.nome}" itemValue="#{estado}" />   
+                                    <f:ajax event="itemSelect" render="clienteCidade" listener="#{clienteMB.onBuscarCidades()}" />
+                                </p:selectOneMenu>
+
+                                <span class="help-block"> 
+                                    <p:message for="clienteEstado"/>
+                                </span>
+                            </div> 
+                        </div> 
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Cidade</label>
+                                <p:selectOneMenu id="clienteCidade"  
+                                                 required="true" requiredMessage="Cidade obrigatória"
+                                                 value="#{clienteMB.cliente.endereco.cidade}" style="width: 100%">
+                                    <f:selectItem itemLabel="Selecione" itemValue="#{null}" />
+                                    <f:selectItems value="#{clienteMB.estadoSelecionado.cidades}" var="cidade" itemLabel="#{cidade.nome}" itemValue="#{cidade.nome}" />   
+
+                                </p:selectOneMenu>
+
+
+                                <span class="help-block"> 
+                                    <p:message for="clienteCidade"/>
+                                </span>
+                            </div> 
+                        </div> 
+
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Complemento</label>
+                                <p:inputText id="clienteComp" class="form-control" value="#{clienteMB.cliente.endereco.complemento}"   maxlength="60"
+                                             a:placeholder="Complemento"/>
+
+                            </div> 
+                        </div> 
+
+                    </div>
+                </div>
+
+                <div class="col-md-12" >
+                    <p:messages/>
+                </div>
+
+                <div class="col-md-12" >
+                    <center>
+                        <p:commandButton update=":formCadastroCliente, :formClientes" process="@form" icon="fa fa-save" style="width: 100px"  value="Salvar" 
+                                         styleClass="btn btn-primary"  action="#{clienteMB.onSalvar()}"> 
+                        </p:commandButton>
+                        <p:spacer width="15" />
+                        <p:commandButton icon="fa fa-close" style="width: 100px"  onclick="PF('cadastroCliente').hide()" 
+                                         process="@form" value="Cancelar" styleClass="btn btn-md btn-default"  />  
+                    </center>
+
+                </div>
+
+
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>
+
+

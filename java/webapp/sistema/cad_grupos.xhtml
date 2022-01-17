@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"     xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:adm="http://github.com/adminfaces" xmlns:g="http://gecont.com.br/g"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                template="#{layoutMB.template}">
+
+    <ui:define name="head-end"> 
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: left !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="logo-lg">
+        Sistema 
+    </ui:define>
+
+    <ui:define name="body-begin">
+        <ui:param name="title" value="Grupos"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. --> 
+    </ui:define>
+
+    <ui:define name="description">
+        Cadastro de grupos de acesso
+    </ui:define>
+
+    <ui:define name="body">
+
+        <h:form prependId="false" id="formGrupos">  
+
+            <div class="panel panel-primary">
+                <div class="panel-heading"><em class="fa fa-keyboard-o"><p:spacer width="10" /></em>Grupos Cadastrados</div>
+                <div class="panel-body"> 
+
+                    <div class="col-md-6">
+                        <h:commandButton value="Adicionar" action="#{grupoMB.onNovo()}" class="btn btn-md btn-success"  >
+                            <p:ajax process="@form"  update=":formCadastroGrupo"  />
+                        </h:commandButton> 
+                    </div> 
+
+                    <div class="col-md-6" style="text-align: right">
+                        <h:commandButton  action="#{grupoMB.onEditar()}" class="btn btn-md btn-info" value="Editar">
+                            <p:ajax  update=":formCadastroGrupo"/>
+                        </h:commandButton>
+
+                    </div>
+
+                    <p:spacer height="5" />
+                    <p:dataTable widgetVar="tabela" id="tabelaID" lazy="true" value="#{grupoMB.tabela}"  var="grupo" rows="20" paginator="true"
+                                 rowKey="#{grupo.hashCode()}"
+                                 sortBy="#{grupo.nome}" 
+                                 sortOrder="descending"
+                                 paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                                 selection="#{grupoMB.grupo}" selectionMode="single" >
+
+                        <p:ajax event="rowSelect"   />
+                        <p:ajax event="sort"  update="tabelaID" oncomplete="PF('tabela').filter()" />
+
+                        <p:column headerText="Nome" width="400" sortBy="#{campo.nome}" >
+                            <h:outputText value="#{grupo.nome}"/>
+                        </p:column> 
+
+                    </p:dataTable>
+                </div>
+            </div>
+
+
+
+        </h:form>
+
+        <p:dialog id='cadastroGrupoID' width="600" header="Cadastro de Grupo"  modal="true" widgetVar="cadastroGrupo">
+            <h:form id="formCadastroGrupo">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">Dados</div>
+                    <div class="panel-body">
+                        <div class="col-md-12">
+
+                            <div class="form-group">
+                                <label>Nome</label>
+                                <h:inputText class="form-control" value="#{grupoMB.grupo.nome}" 
+                                             required="true" requiredMessage="Digite o nome do grupo" a:placeholder="Digite o nome"/>
+                            </div> 
+                        </div> 
+                    </div>
+
+                </div>
+
+                <h:commandButton id="usersearchButton" value="Salvar" styleClass="btn btn-primary" action="#{grupoMB.onSalvar()}">
+                    <p:ajax process="@form"  update=":formGrupos, :formCadastroGrupo" /> 
+                </h:commandButton>
+                <p:spacer width="15" />
+                <h:commandButton  onclick="PF('cadastroGrupo').hide()" immediate="true" value="Cancelar" styleClass="btn btn-md btn-default"  >
+                    <f:ajax execute="@form" render="@form"  />
+                </h:commandButton> 
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>
+
+

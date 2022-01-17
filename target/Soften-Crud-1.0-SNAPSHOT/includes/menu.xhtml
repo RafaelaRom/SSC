@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+
+
+
+    <ul class="sidebar-menu">
+
+
+        <li>
+            <p:link href="/sistema/inicio.soften" onclick="clearBreadCrumbs()">
+                <i class="fa fa-home"></i>
+                <span>Home</span>
+            </p:link>
+        </li>
+        <li class="header">
+            Principal
+        </li>
+
+
+        <li class="treeview">
+            <p:link href="/sistema/cad_usuarios.soften">
+                <i class="fa fa-floppy-o"></i>
+                <span>Cadastros</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </p:link>
+            <ul class="treeview-menu">
+                <li>
+                    <p:link href="/sistema/cad_usuarios.soften">
+                        <i class="fa fa-user-circle-o"></i>
+                        <span>Usuários</span>
+                    </p:link>
+                </li>
+
+                <li>
+                    <p:link href="/sistema/cad_clientes.soften">
+                        <i class="fa fa-users"></i>
+                        <span>Clientes</span>
+                    </p:link>
+                </li>
+
+                <li>
+                    <p:link href="/sistema/cad_produtos.soften">
+                        <i class="fa fa-product-hunt"></i>
+                        <span>Produtos</span>
+                    </p:link>
+                </li>
+
+            </ul>
+
+        </li>
+
+        <li class="treeview">
+            <p:link href="/sistema/cad_pedidos.soften">
+                <i class="fa fa-money"></i>
+                <span>Pedido Venda</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </p:link>
+            <ul class="treeview-menu">
+                <li>
+                    <p:link href="/sistema/cad_pedidos.soften">
+                        <i class="fa fa-newspaper-o"></i>
+                        <span>Pedido Venda</span>
+                    </p:link>
+                </li>
+            </ul>
+
+
+
+        </li>
+
+
+
+
+    </ul>
+
+
+</ui:composition>

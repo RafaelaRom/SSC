@@ -1,0 +1,81 @@
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="soften-persistence" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <class>soften.entidades.Cliente</class>
+    <class>soften.entidades.Login</class>
+    <class>soften.entidades.PedidoVenda</class>
+    <class>soften.entidades.PedidoVendaItens</class>
+    <class>soften.entidades.Produto</class>
+    <class>soften.entidades.TabBairros</class>
+    <class>soften.entidades.TabCidades</class>
+    <class>soften.entidades.TabEstados</class>
+    <class>soften.entidades.TabLogradouro</class>
+    <class>soften.entidades.Usuario</class>
+    <class>soften.entidades.Cidades</class>
+    <class>soften.entidades.Estados</class>
+    <class>soften.entidades.AcaoDoUsuario</class>
+    <class>soften.entidades.PermissaoDeUsuario</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://192.168.1.107/softenbd"/>
+      <property name="javax.persistence.jdbc.user" value="DESKTOP-7CVCON8"/>
+      <property name="javax.persistence.jdbc.password" value="admin"/>
+     
+      <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver"/>
+      <property name="hibernate.case.use_query_cache" value="true"/>
+      <property name="hibernate.connection.provider_class" value="org.hibernate.connection.C3P0ConnectionProvider"/>
+          
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDB102Dialect"/>
+      <property name="hibernate.format_sql" value="true"/>
+      <property name="hibernate.show_sql" value="true"/>
+      <property name="hibernate.c3p0.validate" value="false"/>
+      <property name="hibernate.c3p0.automaticTestTable" value="conTestTable"/>
+      <property name="hibernate.c3p0.testConnectionOnCheckout" value="true"/>
+      <property name="hibernate.connection.autoReconnect" value="true"/>
+      <property name="hibernate.connection.autoReconnectForPools" value="true"/>
+      <property name="hibernate.connection.autocommit" value="false"/>
+      <property name="hibernate.connection.SetBigStringTryClob" value="true"/>
+
+      <property name="hibernate.jdbc.batch_size" value="50"/>
+
+      <property name="hibernate.jdbc.fetch_size" value="50"/>
+      <property name="hibernate.jdbc.use_streams_for_binary" value="true"/>
+      <property name="hibernate.c3p0.preferredTestQuery" value="select 1;"/>
+  
+      <property name="hibernate.c3p0.acquire_increment" value="1"/>
+
+      <property name="hibernate.c3p0.max_statements" value="0"/>
+   
+      <property name="hibernate.c3p0.maxStatementsPerConnection" value="10"/>
+  
+      <property name="hibernate.c3p0.checkoutTimeout" value="5000"/>
+      
+      <property name="hibernate.c3p0.idle_test_period" value="60"/>
+      
+      <property name="hibernate.c3p0.min_size" value="5"/>
+
+      <property name="hibernate.c3p0.max_size" value="50"/>
+      
+      <property name="hibernate.c3p0.timeout" value="60"/>
+      <                   
+      <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+      <property name="hibernate.c3p0.numHelperThreads" value="3"/>
+     
+      <property name="hibernate.c3p0.maxIdleTimeExcessConnections" value="30"/>
+    
+      <property name="hibernate.c3p0.unreturnedConnectionTimeout" value="30"/>
+      
+      <property name="hibernate.c3p0.debugUnreturnedConnectionStackTraces" value="true"/>
+     
+      <property name="hibernate.c3p0.breakAfterAcquireFailure" value="false"/>
+     
+      <property name="hibernate.c3p0.acquireRetryAttempts" value="5"/>
+     
+      <property name="hibernate.c3p0.acquireRetryDelay" value="5"/>
+         <property name="hibernate.jdbc.use_get_generated_keys" value="true" />
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false" />
+      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+    </properties>
+  </persistence-unit>
+</persistence>

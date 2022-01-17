@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ul class="nav navbar-nav">
+
+
+        <li>
+            <p:link href="/sistema/inicio.soften" onclick="clearBreadCrumbs()">
+                <i class="fa fa-home"></i>
+                <span>Home</span>
+            </p:link>
+        </li>
+
+
+
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cadastros <span
+                    class="caret"></span>
+                <i class="fa fa-floppy-o"></i>
+            </a>
+
+            <ul class="dropdown-menu" role="menu">
+                <li>
+                    <p:link href="/sistema/cad_usuarios.soften">
+                        <i class="fa fa-user-circle-o"></i>
+                        <span>Usuários</span>
+                    </p:link>
+                </li>
+
+                <li>
+                    <p:link href="/sistema/cad_clientes.soften">
+                        <i class="fa fa-users"></i>
+                        <span>Clientes</span>
+                    </p:link>
+                </li>
+
+                <li>
+                    <p:link href="/sistema/cad_produtos.soften">
+                        <i class="fa fa-product-hunt"></i>
+                        <span>Produtos</span>
+                    </p:link>
+                </li>
+
+
+
+            </ul>
+
+
+        </li>
+
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Financeiro <span
+                    class="caret"></span>
+                <i class="fa fa-money"></i>
+            </a>
+
+            <ul class="dropdown-menu" role="menu">
+                <li>
+                    <p:link href="/sistema/cad_pedidos.soften">
+                        <i class="fa fa-newspaper-o"></i>
+                        <span>Pedido Venda</span>
+                    </p:link>
+                </li>
+
+
+            </ul>
+
+
+        </li>
+
+
+
+
+    </ul>
+
+</ui:composition>

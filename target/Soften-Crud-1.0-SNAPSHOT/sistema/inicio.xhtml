@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"     xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:adm="http://github.com/adminfaces" xmlns:g="http://gecont.com.br/g"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                template="#{layoutMB.template}">
+
+
+    <!--        <ui:define name="head">
+                <title>Painel</title>
+            </ui:define>-->
+
+    <ui:define name="head-end"> 
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: left !important;
+            }
+
+        </style>
+    </ui:define>
+
+
+
+    <ui:define name="body-begin">
+        <ui:param name="title" value="Home"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. --> 
+    </ui:define>
+
+    <ui:define name="description">
+        Início
+    </ui:define>
+
+    <ui:define name="body">
+
+        <h:form prependId="false" id="formInicio">  
+
+            <div class="panel panel-primary">
+                <div class="panel-heading"><em class="fa fa-home"><p:spacer width="10" />Início</em></div>
+                <div class="panel-body">
+                    <div class="row">
+
+
+
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-aqua"><i class="fa fa-file-text-o"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Importar Estados e Cidades</span>
+                                    <span class="info-box-number">
+                                        <p:commandButton value="Importar Estados" 
+                                                         widgetVar="importarEstadosButton"
+                                                         onclick="PF('progressBar').start();PF('importarEstadosButton').disable();PF('importarCidadesButton').disable();"
+                                                         update="@form"
+                                                         actionListener="#{inicioMB.onImportarEstados}"/>  
+                                        <p:commandButton value="Importar Cidades" 
+                                                         update="@form"
+                                                         widgetVar="importarCidadesButton"
+                                                         onclick="PF('progressBar').start();PF('importarCidadesButton').disable();PF('importarEstadosButton').disable();" 
+                                                         oncomplete="PF('progressBar').cancel();"
+                                                         actionListener="#{inicioMB.onImportarCidades}"/>  
+
+                                    </span>
+
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <p:messages/>
+                            <!-- /.info-box -->
+                            <p:progressBar widgetVar="progressBar" ajax="true" value="#{inicioMB.progress}" 
+                                           labelTemplate="{value}%" 
+                                           styleClass="animated" 
+                                           global="false" interval="500">
+                                <p:ajax event="complete" oncomplete="PF('importarEstadosButton').enable();PF('importarCidadesButton').enable();PF('progressBar').cancel();"/>
+                            </p:progressBar>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </h:form>
+
+
+    </ui:define>
+
+</ui:composition>
+
+

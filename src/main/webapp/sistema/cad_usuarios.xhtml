@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"     xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:adm="http://github.com/adminfaces" xmlns:g="http://gecont.com.br/g"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                template="#{layoutMB.template}">
+
+
+    <!--        <ui:define name="head">
+                <title>Painel</title>
+            </ui:define>-->
+
+    <ui:define name="head-end"> 
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: left !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="logo-lg">
+        Soften 
+    </ui:define>
+
+    <ui:define name="body-begin">
+        <ui:param name="title" value="Usuários"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. --> 
+    </ui:define>
+
+    <ui:define name="description">
+        Cadastro de Usuários do Sistema
+    </ui:define>
+
+    <ui:define name="body">
+
+
+        <h:form prependId="false" id="formUsuarios">  
+
+
+
+            <div class="panel panel-primary">
+                <div class="panel-heading"><em class="fa fa-keyboard-o"><p:spacer width="10" /></em>Usuários Cadastrados</div>
+                <div class="panel-body"> 
+
+                    <div class="col-md-6">
+                        <p:commandButton  class="btn btn-md btn-success" 
+                                          icon="fa fa-plus"
+                                          value="Adicionar" 
+                                          resetValues="true"
+                                          update=":formCadastroUsuario" 
+                                          oncomplete="PF('cadastroUsuario').show()"
+                                          action="#{usuarioMB.onNovo()}"  >
+
+                        </p:commandButton> 
+                    </div> 
+
+                    <div class="col-md-6" style="text-align: right">
+                        <p:commandButton class="btn btn-md btn-info"
+                                         icon="fa fa-edit"
+                                         disabled="#{usuarioMB.desativaEditar}" 
+                                         resetValues="true"
+                                         update=":formCadastroUsuario" 
+                                         oncomplete="PF('cadastroUsuario').show()"
+                                         action="#{usuarioMB.onEditar()}"
+                                         value="Editar"/>
+                        <p:spacer width="15" />
+                        <p:commandButton icon="fa fa-trash" disabled="#{usuarioMB.desativaExcluir}" action="#{usuarioMB.onExcluir()}" update=":tabelaUsuarioID" class="btn btn-md btn-danger" value="Excluir">
+                            <p:confirm header="Confirmação" message="Você tem certeza que quer remover este usuário?" icon="pi pi-exclamation-triangle" />
+                        </p:commandButton>
+
+
+
+                    </div>
+
+
+                    <p:spacer height="5" />
+                    <p:dataTable widgetVar="tabelaUsuario" 
+                                 id="tabelaUsuarioID" 
+                                 lazy="true" 
+                                 value="#{usuarioMB.tabela}"  
+                                 var="usuario"
+                                 rows="20" 
+                                 paginator="true"
+                                 rowKey="#{usuario.hashCode()}"
+                                 sortBy="#{usuario.nome}" 
+                                 sortOrder="descending"  
+                                 paginatorAlwaysVisible="false"
+                                 paginatorPosition="bottom"
+                                 selection="#{usuarioMB.usuario}"
+                                 selectionMode="single"
+                                 emptyMessage="Nenhum usuário cadastrado">
+
+                        <p:ajax event="rowSelect" update="tabelaUsuarioID, formUsuarios"   /> 
+
+                        <p:column headerText="Nome" filterMatchMode="contains" width="400" filterBy="#{usuario.nome}"  priority="1">
+                            <h:outputText value="#{usuario.nome}"/>
+                        </p:column> 
+
+                        <p:column headerText="Login" width="200"  filterBy="#{usuario.login.login}" >
+                            <h:outputText value="#{usuario.login.login}"/>
+                        </p:column> 
+
+                    </p:dataTable>
+                </div>
+            </div>
+
+
+
+        </h:form>
+
+        <p:dialog id='cadastroUsuarioID' width="600" header="Cadastro de Usuário"  modal="true" widgetVar="cadastroUsuario">
+            <h:form id="formCadastroUsuario">
+
+                <div class="panel panel-default">
+
+                    <div class="panel-body">
+                        <div class="col-md-12">
+
+                            <div class="form-group">
+                                <label>Nome</label>
+                                <p:inputText id="usuarioNome" class="form-control" value="#{usuarioMB.usuario.nome}" maxlength="40"
+                                             required="true" requiredMessage="Digite o nome" a:placeholder="Digite o nome"/>
+                                <span class="help-block"> 
+                                    <p:message for="usuarioNome"/>
+                                </span>
+                            </div> 
+
+                        </div> 
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label>Usuário</label>
+                                <p:inputText id="usuarioLogin" class="form-control" value="#{usuarioMB.usuario.login.login}" maxlength="20"
+                                             required="true" requiredMessage="Digite o usuário" a:placeholder="Digite o usuário"/>
+                                <span class="help-block"> 
+                                    <p:message for="usuarioLogin"/>
+                                </span>
+                            </div> 
+                        </div> 
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label>Senha</label>
+                                <p:password id="usuarioSenha" class="form-control" value="#{usuarioMB.usuario.login.senha}"  maxlength="20"
+                                            required="true" requiredMessage="Digite a senha" a:placeholder="Digite a senha"/>
+                                <span class="help-block"> 
+                                    <p:message for="usuarioSenha"/>
+                                </span>
+                            </div> 
+                        </div>  
+                    </div>
+
+                </div>
+                <div class="col-md-12" >
+                    <p:messages/>
+                </div>
+
+                <div class="col-md-12" >
+                    <center>
+                        <p:commandButton update=":formCadastroUsuario, :formUsuarios" process="@form" icon="fa fa-save" style="width: 100px"  value="Salvar" 
+                                         styleClass="btn btn-primary"  action="#{usuarioMB.onSalvar()}"> 
+                        </p:commandButton>
+                        <p:spacer width="15" />
+                        <p:commandButton icon="fa fa-close" style="width: 100px" update=":formUsuarios"  onclick="PF('cadastroUsuario').hide()" 
+                                         process="@form" value="Cancelar" styleClass="btn btn-md btn-default"  />  
+                    </center>
+
+                </div>
+
+
+            </h:form>
+
+        </p:dialog>
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <h:form>
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+            </h:form> 
+        </p:confirmDialog>  
+
+    </ui:define>
+
+</ui:composition>
+
+

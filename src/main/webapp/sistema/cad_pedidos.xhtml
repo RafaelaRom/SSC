@@ -1,0 +1,685 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"     xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:adm="http://github.com/adminfaces" xmlns:g="http://gecont.com.br/g"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                template="#{layoutMB.template}">
+
+
+    <!--        <ui:define name="head">
+                <title>Painel</title>
+            </ui:define>-->
+
+    <ui:define name="head-end"> 
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: left !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="logo-lg">
+        Soften 
+    </ui:define>
+
+    <ui:define name="body-begin">
+        <ui:param name="title" value="Pedidos"/>  
+    </ui:define>
+
+    <ui:define name="description">
+        Cadastro de Pedidos
+    </ui:define>
+
+    <ui:define name="body">
+
+
+        <h:form prependId="false" id="formPedidos">   
+            <p:growl id="notificacaoGrowl" showDetail="true" life="1500"  /> 
+
+            <div class="panel panel-primary">
+                <div class="panel-heading"><em class="fa fa-keyboard-o"><p:spacer width="10" /></em>Pedidos Cadastrados</div>
+                <div class="panel-body"> 
+
+                    <div class="col-md-6">
+                        <p:commandButton icon="fa fa-plus" value="Adicionar" action="#{pedidoMB.onNovo()}" class="btn btn-md btn-success"  
+                                         resetValues="true" update=":formCadastroPedido" oncomplete="PF('cadastroPedido').show()"  > 
+                        </p:commandButton> 
+                    </div> 
+
+                    <div class="col-md-6" style="text-align: right">
+                        <p:commandButton  disabled="#{pedidoMB.desativaEditar}" icon="fa fa-edit" class="btn btn-md btn-info" value="Editar"
+                                          update=":formCadastroPedido" resetValues="true" action="#{pedidoMB.onEditar()}"  oncomplete="PF('cadastroPedido').show()"
+                                          >  
+                        </p:commandButton>
+                        <p:spacer width="15" />
+                        <p:commandButton  disabled="#{pedidoMB.desativaExcluir}" icon="fa fa-trash" action="#{pedidoMB.onExcluir()}" update=":tabelaPedidoID" class="btn btn-md btn-danger" value="Excluir">
+                            <p:confirm header="Confirmação" message="Você tem certeza que quer remover este Pedido?" icon="pi pi-exclamation-triangle" />
+                        </p:commandButton>
+
+                    </div>
+
+
+                    <p:spacer height="5" />
+                    <p:dataTable widgetVar="tabelaPedido" id="tabelaPedidoID" lazy="true" value="#{pedidoMB.tabela}"  var="pedido" rows="20" paginator="true"
+                                 rowKey="#{pedido.hashCode()}"
+                                 sortBy="#{pedido.id}" 
+                                 sortOrder="descending"
+                                 paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                                 emptyMessage="Nenhum Pedido cadastrado"
+                                 selection="#{pedidoMB.pedidoVenda}" selectionMode="single" >
+
+                        <p:ajax event="rowSelect" update="tabelaPedidoID, formPedidos"   /> 
+
+                        <p:column headerText="Nùmero" width="100" filterBy="#{pedido.id}"    >
+                            <h:outputText value="#{pedido.id}"/>
+                        </p:column> 
+
+                        <p:column headerText="Cliente" width="400" filterBy="#{pedido.cliente.nome}"    >
+                            <h:outputText value="#{pedido.cliente.nome}"/>
+                        </p:column> 
+
+                        <p:column headerText="Valor Total" width="100"  filterBy="#{pedido.valorTotalPedido}"  >
+                            <h:outputText value="R$ #{pedido.valorTotalPedido}"> 
+                                <f:convertNumber   maxIntegerDigits="10" maxFractionDigits="4" minFractionDigits="2"/>
+                            </h:outputText>
+                        </p:column> 
+
+
+
+
+                    </p:dataTable>
+                </div>
+            </div>
+
+
+
+        </h:form>
+
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <h:form>
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+            </h:form> 
+        </p:confirmDialog>  
+
+        <p:dialog id='cadastroPedidoID' width="800" header="Cadastro de Pedido"   modal="true" widgetVar="cadastroPedido">
+
+
+            <h:form id="formCadastroPedido"  >
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">Cliente</div>
+                    <div class="panel-body"> 
+
+                        <div class="col-md-5">
+
+                            <div class="form-group">
+                                <label>#{pedidoMB.pedidoVenda.cliente.pessoaJuridica ? 'Razão Social': 'Nome Completo'}</label> 
+                                <p:inputText readonly="true" id="clienteNome" class="form-control" value="#{pedidoMB.pedidoVenda.cliente.nome}" 
+                                             a:placeholder="Selecione o cliente"   />
+
+                            </div> 
+
+                        </div> 
+                        <div class="col-md-3">
+
+                            <div class="form-group">
+                                <label>#{pedidoMB.pedidoVenda.cliente.pessoaJuridica ? 'CNPJ': 'CPF'}</label>
+                                <p:inputMask readonly="true" id="clienteCpfCnpj" mask="#{pedidoMB.pedidoVenda.cliente.pessoaJuridica ? '99.999.999/9999-99' : '999.999.999-99'}"
+                                             class="form-control" maxlength="18"  
+                                             value="#{pedidoMB.pedidoVenda.cliente.cpfCnpj}"
+                                             a:placeholder="Selecione o cliente">  
+
+                                </p:inputMask>
+
+                            </div> 
+                        </div> 
+
+                        <div class="col-md-3">
+
+                            <div class="form-group">
+                                <label>Inscrição Estadual</label>
+                                <p:inputText readonly="true" id="clienteIE" class="form-control" value="#{pedidoMB.pedidoVenda.cliente.ie}" 
+                                             a:placeholder="Selecione o cliente"/>
+
+                            </div> 
+                        </div>  
+
+                        <div style="margin-top: 23px">    
+                            <p:commandButton icon="fa fa-search"  oncomplete="PF('consultaCliente').show();" /> 
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">Itens do pedido</div>
+                    <div class="panel-body"> 
+
+                        <div class="col-md-6">
+                            <p:commandButton value="Adicionar" action="#{pedidoMB.onNovoItem()}" class="btn btn-md btn-success"  
+                                             resetValues="true" update=":formBuscaProduto" oncomplete="PF('consultaProduto').show()"  > 
+                            </p:commandButton> 
+                        </div> 
+
+                        <div class="col-md-6" style="text-align: right">
+                            <p:commandButton  disabled="#{pedidoMB.item.produto == null}" icon="fa fa-edit" class="btn btn-md btn-info" value="Editar"
+                                              update=":formBuscaProduto"   oncomplete="PF('consultaProduto').show()"
+                                              >  
+                            </p:commandButton>
+                            <p:spacer width="15" />
+                            <p:commandButton  disabled="#{pedidoMB.item.produto == null}" icon="fa fa-close" action="#{pedidoMB.onRemoverItem()}" update="tabelaPedidoItensID, notificacaoGrowl" class="btn btn-md btn-danger" value="Excluir">
+                                <p:confirm header="Confirmação" message="Você tem certeza que quer remover este Item do pedido?" icon="pi pi-exclamation-triangle" />
+                            </p:commandButton>
+
+                        </div>
+                        <p:spacer height="20"/>
+                        <div class="col-md-12">
+                            <p:dataTable  id="tabelaPedidoItensID" lazy="true" value="#{pedidoMB.pedidoVenda.itens}"  var="item" rows="5" paginator="true"
+                                          rowKey="#{item.hashCode()}"
+                                          sortBy="#{item.produto.nome}" 
+                                          sortOrder="descending"
+                                          paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                                          emptyMessage="Nenhum item adicionado"
+                                          selection="#{pedidoMB.item}" selectionMode="single" >
+
+                                <p:ajax event="rowSelect" update=":formCadastroPedido"  /> 
+
+                                <p:column headerText="Produto" width="200"    >
+                                    <h:outputText value="#{item.produto.nome}"/>
+                                </p:column> 
+
+                                <p:column headerText="Quantidade" width="100"   >
+                                    <h:outputText value="#{item.quantidade}"> 
+                                    </h:outputText>
+                                </p:column> 
+
+                                <p:column headerText="Valor Unitário" width="100"   >
+                                    <h:outputText value="R$ #{item.valorUnitario}"> 
+                                        <f:convertNumber   maxIntegerDigits="10" maxFractionDigits="4" minFractionDigits="2"/>
+                                    </h:outputText>
+                                </p:column> 
+
+                                <p:column headerText="Valor Total" width="100"  >
+                                    <h:outputText value="R$ #{item.valorTotal}"> 
+                                        <f:convertNumber   maxIntegerDigits="10" maxFractionDigits="4" minFractionDigits="2"/>
+                                    </h:outputText>
+                                </p:column> 
+
+
+                            </p:dataTable>
+
+                        </div>
+                        <br/>
+                        <p:spacer height="5"/>
+
+                        <div class="col-md-12" style="text-align: right">
+                            <label>Total:</label>
+                            <p:spacer width="20" />
+                            <h:outputText value="R$ #{pedidoMB.pedidoVenda.valorTotalPedido}">
+                                <f:convertNumber   maxIntegerDigits="10" maxFractionDigits="4" minFractionDigits="2"/>
+                            </h:outputText>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-12" >
+                    <p:messages/>
+                </div>
+
+                <div class="col-md-12" >
+                    <center>
+                        <p:commandButton update=":formCadastroPedido, :formPedidos" process="@form" icon="fa fa-save" style="width: 100px"  value="Salvar" 
+                                         styleClass="btn btn-primary" action="#{pedidoMB.onSalvar()}"> 
+                        </p:commandButton>
+                        <p:spacer width="15" />
+                        <p:commandButton icon="fa fa-close" style="width: 100px"  onclick="PF('cadastroPedido').hide()" immediate="true" value="Cancelar" styleClass="btn btn-md btn-default"  /> 
+
+
+                    </center>
+
+                </div>
+
+
+
+            </h:form>
+
+        </p:dialog>
+
+        <p:dialog id='consultaClienteID' width="800" header="Busca de Clientes"   modal="true" widgetVar="consultaCliente">
+            <h:form id="formConsultaClientes">
+
+                <div class="panel panel-primary">
+
+                    <div class="panel-body"> 
+
+                        <div class="col-md-6">
+                            <p:commandButton value="Selecionar" 
+                                             icon="fa fa-check"
+                                             class="btn btn-md btn-success"  
+                                             update=":formCadastroPedido" oncomplete="PF('consultaCliente').hide()"  > 
+                            </p:commandButton> 
+                        </div> 
+                        <div class="col-md-16" style="text-align: right">
+                            <p:commandButton icon="fa fa-plus" value="Cadastrar" resetValues="true"  class="btn btn-md btn-primary"  action="#{clienteMB.onNovo()}"
+                                             update=":formCadastroPedido" oncomplete="PF('cadastroCliente').show()"  > 
+                            </p:commandButton> 
+                        </div> 
+                        <br/><br/>
+                        <p:spacer height="10"/>
+                        <div class="col-md-12">
+                            <p:dataTable widgetVar="tabelaConsultaCliente" id="tabelaConsultaClienteID" lazy="true" value="#{clienteMB.tabela}"  var="cliente" rows="20" paginator="true"
+                                         rowKey="#{cliente.hashCode()}"
+                                         sortBy="#{cliente.nome}" 
+                                         sortOrder="descending"
+                                         paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                                         emptyMessage="Nenhum cliente cadastrado"
+                                         selection="#{pedidoMB.pedidoVenda.cliente}" selectionMode="single" >
+
+                                <p:ajax event="rowSelect" update=":formConsultaClientes"  /> 
+
+                                <p:column headerText="Nome / Razão Social" width="400" filterBy="#{cliente.nome}"    >
+                                    <h:outputText value="#{cliente.nome}"/>
+                                </p:column> 
+
+                                <p:column headerText="CPF / CNPJ" width="100" filterBy="#{cliente.cpfCnpj}"  >
+                                    <h:outputText value="#{cliente.cpfCnpj}">
+
+                                    </h:outputText>
+                                </p:column> 
+
+                                <p:column headerText="Inscrição Estadual" filterBy="#{cliente.nome}" width="100"  >
+                                    <h:outputText value="#{cliente.ie}"/>
+                                </p:column> 
+
+
+                            </p:dataTable>
+                        </div>
+                        <br/><br/>
+                        <p:spacer height="10"/>
+                        <div class="col-md-12">
+                            <center>
+
+                                <p:spacer width="15" />
+                                <p:commandButton icon="fa fa-close" style="width: 100px"  onclick="PF('consultaCliente').hide()" 
+                                                 process="@form" value="Cancelar" styleClass="btn btn-md btn-default"  />  
+                            </center>
+                        </div> 
+
+                    </div>
+                </div>
+
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id='consultaProdutoID' width="800" header="Busca de Produtos"   modal="true" widgetVar="consultaProduto">
+            <h:form id="formBuscaProduto">
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading"><em class="fa fa-keyboard-o"><p:spacer width="10" /></em>Produtos</div>
+                    <div class="panel-body"> 
+
+                        <div class="col-md-2">
+                            <label>Quantidade</label>
+                            <p:spinner  label="Quantidade" disabled="#{pedidoMB.item.produto == null}" value="#{pedidoMB.item.quantidade}" >
+                                <f:ajax event="valueChange" listener="#{pedidoMB.onAlteraQuantidade()}" render="valorTotalItens" />
+                            </p:spinner>
+                        </div> 
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Valor Unitário</label>
+                                <p:inputNumber   id="valorUnitarioItem"
+                                                 style="width: 100%"
+                                                 maxValue="9999999999.9999" 
+                                                 decimalPlaces="4"
+                                                 decimalSeparator=","
+                                                 thousandSeparator="."
+                                                 symbol="R$ "
+                                                 value="#{pedidoMB.item.valorUnitario}"  
+                                                 disabled="#{pedidoMB.item.produto == null}"
+                                                 required="true" requiredMessage="Campo Valor Unitário obrigatório"  a:placeholder="99,9999">
+                                    <f:ajax event="valueChange" listener="#{pedidoMB.onAlteraQuantidade()}" render="valorTotalItens" />
+                                </p:inputNumber>
+
+                            </div>
+
+
+                        </div> 
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Valor Total</label>
+                                <p:inputNumber  
+                                    style="width: 100%"
+                                    disabled="true"
+                                    id="valorTotalItens"
+                                    maxValue="9999999999.9999" 
+                                    decimalPlaces="4"
+                                    decimalSeparator=","
+                                    thousandSeparator="."
+                                    symbol="R$ "
+                                    value="#{pedidoMB.item.valorTotal}"   
+                                    required="true" requiredMessage="Campo Valor Unitário obrigatório"  a:placeholder="99,9999"/>
+
+                            </div>
+
+
+                        </div> 
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <p:commandButton icon="fa fa-plus" value="Incluir" disabled="#{pedidoMB.item.produto == null}" action="#{pedidoMB.onIncluirItem()}" class="btn btn-md btn-success"  
+                                                 resetValues="true" update=":formCadastroPedido, notificacaoGrowl"   > 
+                                </p:commandButton> 
+                            </div>
+                        </div>
+
+                        <p:spacer height="50" />
+                        <div class="col-md-12">
+
+
+                            <p:dataTable widgetVar="tabelaProduto" id="tabelaProdutoID" lazy="true" value="#{produtoMB.tabela}"  var="produto" rows="20" paginator="true"
+                                         rowKey="#{produto.hashCode()}"
+                                         sortBy="#{produto.nome}" 
+                                         sortOrder="descending"
+                                         paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                                         emptyMessage="Nenhum produto cadastrado"
+                                         selection="#{pedidoMB.item.produto}" selectionMode="single" >
+
+                                <p:ajax event="rowSelect" update="formBuscaProduto" listener="#{pedidoMB.onSelecionaProduto()}"   /> 
+
+                                <p:column headerText="Nome" width="400" filterBy="#{produto.nome}"   >
+                                    <h:outputText value="#{produto.nome}"/>
+                                </p:column> 
+
+                                <p:column headerText="Valor" width="100"   >
+                                    <h:outputText value="R$ #{produto.valorVenda}"> 
+                                        <f:convertNumber   maxIntegerDigits="10" maxFractionDigits="4" minFractionDigits="2"/>
+                                    </h:outputText>
+                                </p:column> 
+
+                            </p:dataTable>
+                        </div>
+                        <br/> <br/>
+                        <p:spacer height="10" />
+
+                        <div class="col-md-12">
+                            <center>
+
+                                <p:commandButton icon="fa fa-plus" value="Cadastrar" resetValues="true"   class="btn btn-md btn-primary"  action="#{produtoMB.onNovo()}"
+                                                 update=":formCadastroProduto" oncomplete="PF('cadastroProduto').show()"  > 
+                                </p:commandButton> 
+                                <p:spacer width="15" />
+                                <p:commandButton icon="fa fa-close" style="width: 100px"  onclick="PF('consultaProduto').hide()" 
+                                                 process="@form" value="Cancelar" styleClass="btn btn-md btn-default"  />  
+                            </center>
+                        </div> 
+                    </div>
+                </div>
+            </h:form>
+
+        </p:dialog>
+
+        <p:dialog id='cadastroClienteID' width="800" header="Cadastro de Cliente"   modal="true" widgetVar="cadastroCliente">
+
+            <h:form id="formCadastroCliente"  >
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">Dados Cliente</div>
+                    <div class="panel-body">
+
+                        <div class="col-md-12">
+
+                            <div class="form-group"> 
+                                <p:selectOneRadio value="#{clienteMB.cliente.pessoaJuridica}"  >
+                                    <f:selectItem itemLabel="Física" itemValue="#{false}" />
+                                    <f:selectItem itemLabel="Jurídica" itemValue="#{true}" /> 
+                                    <p:ajax event="change" update="dadosCliente" />
+                                </p:selectOneRadio>
+
+                            </div> 
+
+                        </div> 
+                        <p:outputPanel id="dadosCliente">
+                            <div class="col-md-12">
+
+                                <div class="form-group">
+                                    <label>#{clienteMB.cliente.pessoaJuridica ? 'Razão Social': 'Nome Completo'}</label> 
+                                    <p:inputText id="clienteNome" class="form-control" value="#{clienteMB.cliente.nome}" maxlength="60"
+                                                 required="true" requiredMessage="#{clienteMB.cliente.pessoaJuridica ? 'campo Razão Social obrigatório': 'Campo Nome Completo obrigatório'}" a:placeholder="#{clienteMB.cliente.pessoaJuridica ? 'Razão Social': 'Nome Completo'}"/>
+                                    <span class="help-block"> 
+                                        <p:message for="clienteNome"/>
+                                    </span>
+                                </div> 
+
+                            </div> 
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label>#{clienteMB.cliente.pessoaJuridica ? 'CNPJ': 'CPF'}</label>
+                                    <p:inputMask id="clienteCpfCnpj" mask="#{clienteMB.cliente.pessoaJuridica ? '99.999.999/9999-99' : '999.999.999-99'}"
+                                                 class="form-control" maxlength="18" 
+                                                 value="#{clienteMB.cliente.cpfCnpj}"
+                                                 required="true" requiredMessage="#{clienteMB.cliente.pessoaJuridica ? 'Campo CPF obrigatório': 'Campo CNPJ obrigatório'}" a:placeholder="#{clienteMB.cliente.pessoaJuridica ? 'CNPJ': 'CPF'}">  
+                                        <f:validator validatorId="CpfCnpjValidator"/>
+                                    </p:inputMask>
+
+                                    <span class="help-block"> 
+                                        <p:message for="clienteCpfCnpj"/>
+                                    </span>
+                                </div> 
+                            </div> 
+
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label>Inscrição Estadual</label>
+                                    <p:inputText id="clienteIE" class="form-control" value="#{clienteMB.cliente.ie}" maxlength="14" 
+                                                 required="true"   requiredMessage="Digite a inscrição estadual" a:placeholder="Inscrição Estadual"/>
+                                    <span class="help-block"> 
+                                        <p:message for="clienteIE"/>
+                                    </span>
+                                </div> 
+                            </div>  
+                        </p:outputPanel>
+                    </div>
+
+
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Endereço</div>
+                    <div class="panel-body"> 
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>CEP</label>
+                                <p:inputText id="clienteCEP" class="form-control" value="#{clienteMB.cliente.endereco.cep}"  maxlength="8"
+                                             required="true" requiredMessage="Cep obrigatório"  a:placeholder="CEP"/>
+                                <span class="help-block"> 
+                                    <p:message for="clienteCEP"/>
+                                </span>
+                            </div> 
+                        </div> 
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Logradouro</label>
+                                <p:inputText id="clienteLog" class="form-control"  value="#{clienteMB.cliente.endereco.logradouro}"  maxlength="60"
+                                             required="true" requiredMessage="Logradouro obrigatório"  a:placeholder="Rua: Nome da Rua"/>
+                                <span class="help-block"> 
+                                    <p:message for="clienteLog"/>
+                                </span>
+                            </div> 
+                        </div> 
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Número</label>
+                                <p:inputMask mask="9?999999" style="text-align: right" id="clienteNum" class="form-control" value="#{clienteMB.cliente.endereco.numero}" maxlength="6"
+                                             required="true" requiredMessage="Número do imóvel obrigatório"  a:placeholder="999"/>
+
+                                <span class="help-block"> 
+                                    <p:message for="clienteNum"/>
+                                </span>
+                            </div> 
+                        </div> 
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Bairro</label>
+                                <p:inputText id="clienteBairro" class="form-control" value="#{clienteMB.cliente.endereco.bairro}" maxlength="60"
+                                             required="true" requiredMessage="Bairro obrigatório"  a:placeholder="Nome do Bairro"/>
+                                <span class="help-block"> 
+                                    <p:message for="clienteBairro"/>
+                                </span>
+                            </div> 
+                        </div> 
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Cidade</label>
+                                <p:inputText id="clienteCidade" class="form-control" value="#{clienteMB.cliente.endereco.cidade}" maxlength="60"
+                                             required="true" requiredMessage="Cidade obrigatória"  a:placeholder="Cidade"/>
+
+                                <span class="help-block"> 
+                                    <p:message for="clienteCidade"/>
+                                </span>
+                            </div> 
+                        </div> 
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Estado</label>
+                                <p:inputText id="clienteEstado" class="form-control" value="#{clienteMB.cliente.endereco.estado}" maxlength="20"
+                                             required="true" requiredMessage="Estado obrigatório"  a:placeholder="Nome do Estado"/>
+                                <span class="help-block"> 
+                                    <p:message for="clienteEstado"/>
+                                </span>
+                            </div> 
+                        </div> 
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Complemento</label>
+                                <p:inputText id="clienteComp" class="form-control" value="#{clienteMB.cliente.endereco.complemento}"   maxlength="60"
+                                             a:placeholder="Complemento"/>
+
+                            </div> 
+                        </div> 
+
+                    </div>
+                </div>
+
+                <div class="col-md-12" >
+                    <p:messages/>
+                </div>
+
+                <div class="col-md-12" >
+                    <center>
+                        <p:commandButton update=":formCadastroCliente, :formConsultaClientes" process="@form" icon="fa fa-save" style="width: 100px"  value="Salvar" 
+                                         styleClass="btn btn-primary"  action="#{clienteMB.onSalvar()}"> 
+                        </p:commandButton>
+                        <p:spacer width="15" />
+                        <p:commandButton icon="fa fa-close" style="width: 100px"  onclick="PF('cadastroCliente').hide()" 
+                                         process="@form" value="Cancelar" styleClass="btn btn-md btn-default"  />  
+                    </center>
+
+                </div>
+
+
+
+            </h:form>
+
+        </p:dialog>
+
+        <p:dialog id='cadastroProdutoID' width="600" header="Cadastro de Produto"   modal="true" widgetVar="cadastroProduto">
+
+
+            <h:form id="formCadastroProduto"  >
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">Dados Produto</div>
+                    <div class="panel-body"> 
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Nome</label>
+                                <p:inputText id="produtoNome" class="form-control" value="#{produtoMB.produto.nome}" maxlength="60"
+                                             required="true" requiredMessage="Campo Nome obrigatório"  a:placeholder="Nome do produto"/>
+                                <span class="help-block"> 
+                                    <p:message for="produtoNome"/>
+                                </span>
+                            </div> 
+                        </div> 
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Valor Custo</label>
+                                <br/>
+                                <p:inputNumber id="produtoValorCusto"   
+                                               maxValue="9999999999.9999" 
+                                               decimalPlaces="4"
+                                               decimalSeparator=","
+                                               thousandSeparator="."
+                                               symbol="R$ "
+                                               value="#{produtoMB.produto.valorCusto}"  
+
+                                               required="true" requiredMessage="Campo Valor Custo obrigatório"  a:placeholder="99,9999"/>
+                                <span class="help-block"> 
+                                    <p:message for="produtoValorCusto"/>
+                                </span>
+                            </div> 
+                        </div> 
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Valor Venda</label>
+                                <br/>
+                                <p:inputNumber id="produtoValorVenda"  
+                                               maxValue="9999999999.9999" 
+                                               decimalPlaces="4"
+                                               decimalSeparator=","
+                                               symbol="R$ "
+                                               value="#{produtoMB.produto.valorVenda}"
+                                               required="true" requiredMessage="Campo Valor Venda obrigatório"  a:placeholder="99,9999"/>
+                                <span class="help-block"> 
+                                    <p:message for="produtoValorVenda"/>
+                                </span>
+                            </div> 
+                        </div> 
+
+
+                    </div>
+                </div>
+
+                <div class="col-md-12" >
+                    <p:messages/>
+                </div>
+
+
+                <div class="col-md-12" >
+                    <center>
+                        <p:commandButton update=":formCadastroProduto, :formBuscaProduto" process="@form" icon="fa fa-save" style="width: 100px"  value="Salvar" 
+                                         styleClass="btn btn-primary"  action="#{produtoMB.onSalvar()}"> 
+                        </p:commandButton>
+                        <p:spacer width="15"  />
+                        <p:commandButton icon="fa fa-close" style="width: 100px"   onclick="PF('cadastroProduto').hide()" 
+                                         process="@form" value="Cancelar" styleClass="btn btn-md btn-default"  />  
+                    </center>
+
+                </div>
+
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>
+
+
